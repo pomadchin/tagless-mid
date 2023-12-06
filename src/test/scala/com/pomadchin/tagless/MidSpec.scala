@@ -16,9 +16,10 @@ class MidSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
       val logging: Service[Mid[IO, *]] = Service.loggingInstance[IO]
       val tracing: Service[Mid[IO, *]] = Service.tracingInstance[IO]
 
-      val res: Service.Result[IO] = (tracing |+| logging).attach(service).list
+      // attach tracing and logging mid to the service
+      val serviceTracedAndLogged: Service[IO] = (tracing |+| logging).attach(service)
 
-      res.asserting(_ shouldBe serviceListValues.asRight) >>
+      serviceTracedAndLogged.list.asserting(_ shouldBe serviceListValues.asRight) >>
         logMapActualValues[IO].asserting(_ shouldBe List("before", "middle", "after"))
     }
   }
