@@ -20,7 +20,7 @@ scalacOptions ++= Seq(
 
 scalacOptions ++= when(scalaBinaryVersion.value == "2.13")("-Ymacro-annotations", "-Xsource:3")
 scalacOptions ++= (scalaBinaryVersion.value match {
-  case "3" => List("-language:adhocExtensions", "-source:future", "-explain", "-Ykind-projector:underscores")
+  case "3" => List("-Ykind-projector:underscores")
   case _   => List("-Xsource:3", "-P:kind-projector:underscore-placeholders")
 })
 
