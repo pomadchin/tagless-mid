@@ -53,7 +53,7 @@ lazy val commonSettings = Seq(
 lazy val root = (project in file("."))
   .settings(commonSettings)
   .settings(name := "tagless-mid")
-  .settings(publish := {}, publishLocal := {})
+  .settings(publish / skip := true, publishLocal / skip := true)
   .aggregate(core)
 
 lazy val core = project
