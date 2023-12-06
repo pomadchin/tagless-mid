@@ -1,4 +1,4 @@
-package com.pomadchin.tagless
+package io.github.pomadchin.tagless
 
 import cats.{~>, FlatMap}
 import cats.data.Tuple2K

@@ -1,4 +1,4 @@
-package com.pomadchin.tagless
+package io.github.pomadchin.tagless
 
 import cats.data.{Chain, Tuple2K}
 import cats.tagless.{ApplyK, InvariantK}

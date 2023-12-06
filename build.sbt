@@ -6,7 +6,7 @@ name := "tagless-mid"
 version := "0.1.0-SNAPSHOT"
 scalaVersion := scala213
 crossScalaVersions := Seq(scala213, scala3)
-organization := "com.pomadchin"
+organization := "io.github.pomadchin"
 scalacOptions ++= Seq(
   "-deprecation",
   "-unchecked",

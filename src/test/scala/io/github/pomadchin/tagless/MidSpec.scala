@@ -1,4 +1,4 @@
-package com.pomadchin.tagless
+package io.github.pomadchin.tagless
 
 import cats.effect.IO
 import cats.effect.testing.scalatest.AsyncIOSpec
@@ -8,7 +8,7 @@ import org.scalatest.freespec.AsyncFreeSpec
 import org.scalatest.matchers.should.Matchers
 
 class MidSpec extends AsyncFreeSpec with AsyncIOSpec with Matchers {
-  import com.pomadchin.tagless.Fixtures.*
+  import io.github.pomadchin.tagless.Fixtures.*
 
   "Mid Spec" - {
     "should construct a service with attached logging and tracing" in {
