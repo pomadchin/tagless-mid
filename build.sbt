@@ -46,7 +46,7 @@ lazy val commonSettings = Seq(
   resolvers ++= Resolver.sonatypeOssRepos("releases") ++ Resolver.sonatypeOssRepos("snapshots"),
   // compiler plugins
   libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))(
-    compilerPlugin("org.typelevel" % "kind-projector" % "0.13.2" cross CrossVersion.full)
+    compilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full)
   )
 )
 
@@ -61,10 +61,10 @@ lazy val core = project
   .settings(name := "tagless-mid-core")
   .settings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-tagless-core" % "0.15.0",
-      "org.typelevel" %% "cats-effect" % "3.5.2" % Test,
+      "org.typelevel" %% "cats-tagless-core" % "0.16.0",
+      "org.typelevel" %% "cats-effect" % "3.5.4" % Test,
       "org.typelevel" %% "cats-effect-testing-scalatest" % "1.5.0" % Test,
-      "org.scalatest" %% "scalatest" % "3.2.17" % Test
+      "org.scalatest" %% "scalatest" % "3.2.18" % Test
     )
   )
 
