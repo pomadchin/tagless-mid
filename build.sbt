@@ -21,6 +21,7 @@ lazy val commonSettings = Seq(
     case "3" => List("-Ykind-projector:underscores")
     case _   => List("-Xsource:3", "-P:kind-projector:underscore-placeholders")
   }),
+  Test / scalacOptions ++= when(scalaBinaryVersion.value.startsWith("3"))("-experimental"),
   description := "ToFu Mid as a separate library",
   licenses := Seq("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0.html")),
   homepage := Some(url("https://github.com/pomadchin/tagless-mid")),
@@ -45,7 +46,9 @@ lazy val commonSettings = Seq(
   // resolvers
   resolvers ++= Resolver.sonatypeOssRepos("releases") ++ Resolver.sonatypeOssRepos("snapshots"),
   // compiler plugins
-  libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))(compilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full))
+  libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))(
+    compilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full)
+  )
 )
 
 lazy val root = (project in file("."))
@@ -59,14 +62,13 @@ lazy val core = project
   .settings(name := "tagless-mid-core")
   .settings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-tagless-core"             % "0.16.0",
-      "org.typelevel" %% "cats-effect"                   % "3.5.4"  % Test,
-      "org.typelevel" %% "cats-effect-testing-scalatest" % "1.5.0"  % Test,
-      "org.scalatest" %% "scalatest"                     % "3.2.18" % Test
+      "org.typelevel" %% "cats-tagless-core" % "0.16.0",
+      "org.typelevel" %% "cats-effect" % "3.5.4" % Test,
+      "org.typelevel" %% "cats-effect-testing-scalatest" % "1.5.0" % Test,
+      "org.scalatest" %% "scalatest" % "3.2.18" % Test
     )
   )
-  .settings(libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))("org.typelevel" %% "cats-tagless-macros" % "0.16.0"))
-  .settings(Test / scalacOptions ++= when(scalaBinaryVersion.value.startsWith("3"))("-experimental"))
+  .settings(libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))("org.typelevel" %% "cats-tagless-macros" % "0.16.0" % Test))
 
 def when[A](condition: Boolean)(values: A*): Seq[A] =
   if (condition) values else Nil
