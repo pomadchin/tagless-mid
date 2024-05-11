@@ -1,5 +1,5 @@
-val scala213 = "2.13.12"
-val scala3 = "3.3.1"
+val scala213 = "2.13.14"
+val scala3 = "3.4.1"
 val scalaVersions = Seq(scala3, scala213)
 
 lazy val commonSettings = Seq(
@@ -45,9 +45,7 @@ lazy val commonSettings = Seq(
   // resolvers
   resolvers ++= Resolver.sonatypeOssRepos("releases") ++ Resolver.sonatypeOssRepos("snapshots"),
   // compiler plugins
-  libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))(
-    compilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full)
-  )
+  libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))(compilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full))
 )
 
 lazy val root = (project in file("."))
@@ -61,12 +59,14 @@ lazy val core = project
   .settings(name := "tagless-mid-core")
   .settings(
     libraryDependencies ++= Seq(
-      "org.typelevel" %% "cats-tagless-core" % "0.16.0",
-      "org.typelevel" %% "cats-effect" % "3.5.4" % Test,
-      "org.typelevel" %% "cats-effect-testing-scalatest" % "1.5.0" % Test,
-      "org.scalatest" %% "scalatest" % "3.2.18" % Test
+      "org.typelevel" %% "cats-tagless-core"             % "0.16.0",
+      "org.typelevel" %% "cats-effect"                   % "3.5.4"  % Test,
+      "org.typelevel" %% "cats-effect-testing-scalatest" % "1.5.0"  % Test,
+      "org.scalatest" %% "scalatest"                     % "3.2.18" % Test
     )
   )
+  .settings(libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))("org.typelevel" %% "cats-tagless-macros" % "0.16.0"))
+  .settings(Test / scalacOptions ++= when(scalaBinaryVersion.value.startsWith("3"))("-experimental"))
 
 def when[A](condition: Boolean)(values: A*): Seq[A] =
   if (condition) values else Nil
