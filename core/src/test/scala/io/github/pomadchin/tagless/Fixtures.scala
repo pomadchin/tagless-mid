@@ -6,13 +6,16 @@ import cats.effect.{Clock, Sync}
 import cats.syntax.either.*
 import cats.syntax.flatMap.*
 import cats.syntax.functor.*
-import cats.tagless.ApplyK
+import cats.tagless.*
+import cats.tagless.syntax.functorK.*
 
 import scala.collection.concurrent.TrieMap
 
-object Fixtures {
+trait Fixtures {
   // Nanos -> Value
   val logMap = new TrieMap[Long, String]()
+  def clearLog: Unit = logMap.clear()
+
   def logMap[F[_]: Sync]: F[TrieMap[Long, String]] = Sync[F].delay(logMap)
   def logMapActualValues[F[_]: Sync]: F[List[String]] =
     logMap[F].map(_.toList.sortBy(_._1).map(_._2.split(", ").last.trim))
@@ -42,18 +45,7 @@ object Fixtures {
   }
 
   object Service {
-    // can be derived via @autoApplyK in Scala 2
-    implicit val applyKForService: ApplyK[Service] = new ApplyK[Service] {
-      def mapK[F[_], G[_]](af: Service[F])(fk: F ~> G): Service[G] =
-        new Service[G] {
-          def list: Result[G] = fk(af.list)
-        }
-
-      def productK[F[_], G[_]](af: Service[F], ag: Service[G]): Service[({ type λ[a] = Tuple2K[F, G, a] })#λ] =
-        new Service[({ type λ[a] = Tuple2K[F, G, a] })#λ] {
-          def list: Result[Tuple2K[F, G, *]] = cats.tagless.catsTaglessApplyKForIdK.productK[F, G](af.list, ag.list)
-        }
-    }
+    implicit val applyKForService: ApplyK[Service] = Derive.applyK
 
     type Result[F[_]] = F[Either[CrudError, List[User]]]
     def instance[F[_]: Sync: Clock]: Service[F] = new Service[F] {
@@ -67,17 +59,30 @@ object Fixtures {
       }
     }
 
-    def tracingInstance[F[_]: FlatMap: Logger]: Service[Mid[F, *]] =
+    def tracingMidInstance[F[_]: FlatMap: Logger]: Service[Mid[F, *]] =
       new Service[Mid[F, *]] {
         def list: Mid[F, Either[CrudError, List[User]]] = Logger[F].info("tracing, before") >> _
       }
 
-    def loggingInstance[F[_]: FlatMap: Logger]: Service[Mid[F, *]] =
+    def loggingMidInstance[F[_]: FlatMap: Logger]: Service[Mid[F, *]] =
       new Service[Mid[F, *]] {
-        def list: Mid[F, Either[CrudError, List[User]]] = _.flatMap {
-          case r @ Right(_)    => Logger[F].info("logging, after").as(r)
-          case l @ Left(error) => Logger[F].info(error.toString).as(l)
-        }
+        def list: Mid[F, Either[CrudError, List[User]]] = _.flatTap(_ => Logger[F].info("logging, after"))
+      }
+
+    def tracingMidViaPreInstance[F[_]: FlatMap: Logger]: Service[Mid[F, *]] =
+      tracingPreInstance[F].mapK(Pre.asMid[F])
+
+    def loggingMidViaPostInstance[F[_]: FlatMap: Logger]: Service[Mid[F, *]] =
+      loggingPostInstance[F].mapK(Post.asMid[F])
+
+    def loggingPostInstance[F[_]: FlatMap: Logger]: Service[Post[F, *]] =
+      new Service[Post[F, *]] {
+        def list: Post[F, Either[CrudError, List[User]]] = _ => Logger[F].info("logging, after")
+      }
+
+    def tracingPreInstance[F[_]: FlatMap: Logger]: Service[Pre[F, *]] =
+      new Service[Pre[F, *]] {
+        def list: Pre[F, Either[CrudError, List[User]]] = Pre.apply(Logger[F].info("tracing, before"))
       }
   }
 }

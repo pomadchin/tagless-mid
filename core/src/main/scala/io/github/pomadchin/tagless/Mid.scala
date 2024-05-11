@@ -56,9 +56,7 @@ class MidMonoidK[F[_]] extends MonoidK[Mid[F, *]] {
 }
 
 class MidInvariantK extends InvariantK[({ type λ[F[_]] = Mid[F, Any] })#λ] {
-  def imapK[F[_], G[_]](af: Mid[F, Any])(fk: F ~> G)(gk: G ~> F): Mid[G, Any] = { ga =>
-    fk(af(gk(ga)))
-  }
+  def imapK[F[_], G[_]](af: Mid[F, Any])(fk: F ~> G)(gk: G ~> F): Mid[G, Any] = { ga => fk(af(gk(ga))) }
 }
 
 class MidAlgebraSemigroup[F[_], U[f[_]]](implicit U: ApplyK[U]) extends Semigroup[U[Mid[F, *]]] {
