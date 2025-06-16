@@ -40,7 +40,7 @@ lazy val commonSettings = Seq(
     )
   ),
   // resolvers
-  resolvers ++= Resolver.sonatypeOssRepos("staging") ++ Resolver.sonatypeOssRepos("releases") ++ Resolver.sonatypeOssRepos("snapshots"),
+  resolvers += Resolver.sonatypeCentralSnapshots,
   // compiler plugins
   libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))(
     compilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full)
