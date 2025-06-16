@@ -1,10 +1,6 @@
-import xerial.sbt.Sonatype.sonatypeCentralHost
-
 val scala213 = "2.13.16"
 val scala3 = "3.7.0"
 val scalaVersions = Seq(scala3, scala213)
-
-ThisBuild / sonatypeCredentialHost := sonatypeCentralHost
 
 lazy val commonSettings = Seq(
   scalaVersion := scalaVersions.head,
@@ -43,11 +39,8 @@ lazy val commonSettings = Seq(
       url("https://github.com/pomadchin")
     )
   ),
-  // sonatype settings
-  sonatypeProfileName := "io.github.pomadchin",
-  sonatypeCredentialHost := sonatypeCentralHost,
   // resolvers
-  resolvers ++= Resolver.sonatypeOssRepos("releases") ++ Resolver.sonatypeOssRepos("snapshots"),
+  resolvers ++= Resolver.sonatypeOssRepos("staging") ++ Resolver.sonatypeOssRepos("releases") ++ Resolver.sonatypeOssRepos("snapshots"),
   // compiler plugins
   libraryDependencies ++= when(scalaBinaryVersion.value.startsWith("2"))(
     compilerPlugin("org.typelevel" % "kind-projector" % "0.13.3" cross CrossVersion.full)
