@@ -13,7 +13,6 @@ This library is [ToFu.Mid](https://github.com/tofu-tf/tofu/blob/v0.12.1/modules/
 ## Quick Start with SBT
 
 ```scala
-// it is published to maven central, but you can use the following repos in addition
 resolvers += Resolver.sonatypeCentralSnapshots // for snaphots
 
 // `<latest version>` refers to the version indicated by the badge above
