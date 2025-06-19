@@ -14,9 +14,7 @@ This library is [ToFu.Mid](https://github.com/tofu-tf/tofu/blob/v0.12.1/modules/
 
 ```scala
 // it is published to maven central, but you can use the following repos in addition
-resolvers ++= 
-  Resolver.sonatypeOssRepos("releases") ++ 
-  Resolver.sonatypeCentralSnapshots // for snaphots
+resolvers += Resolver.sonatypeCentralSnapshots // for snaphots
 
 // `<latest version>` refers to the version indicated by the badge above
 libraryDependencies += "io.github.pomadchin" %% "tagless-mid-core" % "<latest version>"
